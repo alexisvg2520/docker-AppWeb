@@ -1,0 +1,40 @@
+version: "3.2"
+services:
+  web:
+    build: ./webApp/
+    image: webcompose:v1
+    container_name: webc
+    ports:
+      - "8081:80"
+    environment:
+      - MYSQL_USERNAME=prueba
+      - MYSQL_PASSWORD=1234
+      - MYSQL_DATABASE=db_mantenimiento
+      - MYSQL_HOST=mysql
+    hostname: phpweb
+    volumes:
+      - ./webApp/src:/app
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    restart: on-failure
+    stdin_open: true
+    tty: true    
+        
+        
+  mysql:
+    build: ./mysqldocker
+    image: dbcompose:v1
+    container_name: database
+    hostname: database
+    ports:
+      - "33066:3306"
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=tests
+      - MYSQL_USER=prueba
+      - MYSQL_PASSWORD=1234
+      - MYSQL_DATABASE=db_mantenimiento
+    volumes:
+      - ./mysql:/var/lib/mysql
